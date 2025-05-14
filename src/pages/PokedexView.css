@@ -1,0 +1,30 @@
+.grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+  }
+  .pokemon-slot {
+    width: 48px;
+    height: 48px;
+    border: 2px solid #444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .pokemon-slot.selected {
+    border-color: #f00;
+  }
+  .detail-card {
+    text-align: center;
+  }
+  .detail-card img {
+    border: 2px solid #444;
+    border-radius: 8px;
+  }
+  .detail-card button {
+    margin-top: 12px;
+    padding: 8px 16px;
+  }
+  

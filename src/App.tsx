@@ -20,6 +20,9 @@ import '@ionic/react/css/text-transformation.css';
 
 /* Theme variables */
 import Pokedex from './components/Pokedex';
+import PokedexView from "./pages/PokedexView";
+import PackView    from "./pages/PackView";
+import ExitView    from "./pages/ExitView";
 import './theme/variables.css';
 import { MenuPokedexProvider } from './contexts/MenuPokedexProvider';
 import { PokedexMenu } from './components/Menu/PokedexMenu';
@@ -29,27 +32,22 @@ setupIonicReact();
 const App: React.FC = () => (
   <IonApp>
     <IonReactRouter>
-      <IonRouterOutlet>
-        <MenuPokedexProvider>
-          <Pokedex>
-            <Route exact path="/home">
-              <PokedexMenu />
-            </Route>
-            <Route exact path="/pokedex">
-              <>Esta es la Pokedex</>
-            </Route>
-            <Route exact path="/pack">
-              <>Esta es la bolsa de objetos</>
-            </Route>
-            <Route exact path="/exit">
-            </Route>
-            <Route exact path="/">
-              <Redirect to="/home" />
-            </Route>
-          </Pokedex>
-        </MenuPokedexProvider>
-      </IonRouterOutlet>
-    </IonReactRouter>
+    <IonRouterOutlet>
+      <MenuPokedexProvider>
+        <Pokedex>
+          <Route exact path="/home">
+            <PokedexMenu />
+          </Route>
+          <Route exact path="/pokedex" component={PokedexView} />
+          <Route exact path="/pack"    component={PackView}    />
+          <Route exact path="/exit"    component={ExitView}    />
+          <Route exact path="/">
+            <Redirect to="/home" />
+          </Route>
+        </Pokedex>
+      </MenuPokedexProvider>
+    </IonRouterOutlet>
+  </IonReactRouter>
   </IonApp>
 );
 

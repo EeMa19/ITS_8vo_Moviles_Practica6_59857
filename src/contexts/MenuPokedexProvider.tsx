@@ -1,36 +1,35 @@
-import { JSX, ReactNode, useState } from "react";
-import { EPokedexMenuOption, EPokedexScreen, MenuPokedexContext } from "./MenuPokedexContext";
+import React, { ReactNode, useState } from "react";
+import {
+  EPokedexMenuOption,
+  EPokedexScreen,
+  MenuPokedexContext,
+} from "./MenuPokedexContext";
+import { Pokemon } from "../interfaces/Pokemon";
 
-export const MenuPokedexProvider = ({ children }: { children: ReactNode | JSX.Element | JSX.Element[] }) => {
-  const [screen, setScreen] = useState(EPokedexScreen.MENU);
-  const [menuOption, setMenuOption] = useState(EPokedexMenuOption.POKEDEX);
-
-  const setScreenOption = (option: EPokedexScreen) => {
-    setScreen(option);
-  };
-
-  const getScreenOption = () => {
-    return screen;
-  }
-
-  const setMenuOptionValue = (option: EPokedexMenuOption) => {
-    setMenuOption(option);
-  };
-
-  const getMenuOption = () => {
-    return menuOption;
-  }
+export const MenuPokedexProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
+  const [screen, setScreen] = useState<EPokedexScreen>(EPokedexScreen.MENU);
+  const [menuOption, setMenuOption] = useState<EPokedexMenuOption>(
+    EPokedexMenuOption.POKEDEX
+  );
+  const [pokemonOption, setPokemonOption] = useState<number>(0);
+  const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null);
 
   return (
     <MenuPokedexContext.Provider
       value={{
-        screen: getScreenOption(),
-        setScreen: setScreenOption,
-        menuOption: getMenuOption(),
-        setMenuOption: setMenuOptionValue,
+        screen,
+        menuOption,
+        pokemonOption,
+        selectedPokemon,
+        setScreen,
+        setMenuOption,
+        setPokemonOption,
+        setSelectedPokemon,
       }}
     >
       {children}
     </MenuPokedexContext.Provider>
-  )
-}
+  );
+};
