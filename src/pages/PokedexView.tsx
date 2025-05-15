@@ -2,7 +2,10 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import { IonPage, IonContent } from "@ionic/react";
 import { useHistory } from "react-router-dom";
-import { MenuPokedexContext, EPokedexScreen } from "../contexts/MenuPokedexContext";
+import {
+  MenuPokedexContext,
+  EPokedexScreen,
+} from "../contexts/MenuPokedexContext";
 import { PokeService } from "../services/PokeService";
 import { Pokemon } from "../interfaces/Pokemon";
 import { Cross } from "../components/Buttons/Cross";
@@ -21,23 +24,31 @@ const PokedexView: React.FC = () => {
   const gridRef = useRef<HTMLDivElement>(null);
   const history = useHistory();
 
-  // 1) Carga la lista
+  // 1️⃣ Carga la lista de Pokémon al entrar
   useEffect(() => {
     if (screen === EPokedexScreen.POKEDEX) {
       PokeService.getAllPokemons().then(setPokemons);
     }
   }, [screen]);
 
-  // 2) Mantén visible el seleccionado al navegar
+  // 2️⃣ Mantén visible el seleccionado al navegar
   useEffect(() => {
     if (screen === EPokedexScreen.POKEDEX && gridRef.current) {
       const items = Array.from(gridRef.current.children) as HTMLElement[];
       const el = items[pokemonOption];
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "nearest" });
-      }
+      el?.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
   }, [pokemonOption, screen]);
+
+  // 3️⃣ Confirma la selección con el BigBlueButton
+  const handleConfirm = () => {
+    if (screen === EPokedexScreen.POKEDEX) {
+      const selected = pokemons[pokemonOption];
+      if (selected) {
+        history.push(`/pokemon/${selected.id}`);
+      }
+    }
+  };
 
   return (
     <IonPage>
@@ -52,10 +63,7 @@ const PokedexView: React.FC = () => {
                     className={`pokemon-slot ${
                       i === pokemonOption ? "selected" : ""
                     }`}
-                    onClick={() => {
-                      // navegar a la ruta de detalle
-                      history.push(`/pokemon/${p.id}`);
-                    }}
+                    onClick={() => setPokemonOption(i)}
                   >
                     <img src={p.image} alt={p.name} />
                   </div>
@@ -65,6 +73,14 @@ const PokedexView: React.FC = () => {
           )}
         </div>
 
+        {/* Big Blue Button: confirma Pokémon seleccionado */}
+        <div
+          id="bigbluebutton"
+          className="gameboy-button"
+          onClick={handleConfirm}
+        />
+
+        {/* Cruceta para mover la selección */}
         <Cross />
       </IonContent>
     </IonPage>
