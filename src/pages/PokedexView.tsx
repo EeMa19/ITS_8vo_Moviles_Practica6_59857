@@ -1,92 +1,71 @@
-import React, { useContext, useEffect, useState } from "react";
-import {
-  IonPage,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-  IonToast,
-} from "@ionic/react";
+// src/pages/PokedexView.tsx
+import React, { useContext, useEffect, useState, useRef } from "react";
+import { IonPage, IonContent } from "@ionic/react";
+import { useHistory } from "react-router-dom";
 import { MenuPokedexContext, EPokedexScreen } from "../contexts/MenuPokedexContext";
 import { PokeService } from "../services/PokeService";
 import { Pokemon } from "../interfaces/Pokemon";
 import { Cross } from "../components/Buttons/Cross";
+
+import "../theme/variables.css";
 import "./PokedexView.css";
 
 const PokedexView: React.FC = () => {
   const {
     screen,
     pokemonOption,
-    selectedPokemon,
-    setSelectedPokemon,
     setPokemonOption,
-    setScreen,
   } = useContext(MenuPokedexContext);
 
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
-  const [error, setError] = useState<string>();
+  const gridRef = useRef<HTMLDivElement>(null);
+  const history = useHistory();
 
+  // 1) Carga la lista
   useEffect(() => {
-    PokeService.getAllPokemons().then(setPokemons).catch((e) => {
-      setError("Error al cargar Pokémon");
-      console.error(e);
-    });
-  }, []);
-
-  // Al entrar a pantalla detalle, apuntar selectedPokemon si no está
-  useEffect(() => {
-    if (screen === EPokedexScreen.DETAIL && !selectedPokemon) {
-      setSelectedPokemon(pokemons[pokemonOption] || null);
+    if (screen === EPokedexScreen.POKEDEX) {
+      PokeService.getAllPokemons().then(setPokemons);
     }
-  }, [screen, pokemonOption, pokemons]);
+  }, [screen]);
+
+  // 2) Mantén visible el seleccionado al navegar
+  useEffect(() => {
+    if (screen === EPokedexScreen.POKEDEX && gridRef.current) {
+      const items = Array.from(gridRef.current.children) as HTMLElement[];
+      const el = items[pokemonOption];
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    }
+  }, [pokemonOption, screen]);
 
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Pokédex</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent className="ion-padding">
-        {screen === EPokedexScreen.POKEDEX && (
-          <>
-            <div className="grid">
-              {pokemons.map((p, i) => (
-                <div
-                  key={p.id}
-                  className={`pokemon-slot ${
-                    i === pokemonOption ? "selected" : ""
-                  }`}
-                  onClick={() => setSelectedPokemon(p)}
-                >
-                  <img src={p.image} alt={p.name} />
-                </div>
-              ))}
+      <IonContent fullscreen className="pokedex-content">
+        <div className="screen-container">
+          {screen === EPokedexScreen.POKEDEX && (
+            <div className="grid-wrapper">
+              <div className="grid" ref={gridRef}>
+                {pokemons.map((p, i) => (
+                  <div
+                    key={p.id}
+                    className={`pokemon-slot ${
+                      i === pokemonOption ? "selected" : ""
+                    }`}
+                    onClick={() => {
+                      // navegar a la ruta de detalle
+                      history.push(`/pokemon/${p.id}`);
+                    }}
+                  >
+                    <img src={p.image} alt={p.name} />
+                  </div>
+                ))}
+              </div>
             </div>
-            <Cross />
-          </>
-        )}
-        {screen === EPokedexScreen.DETAIL && selectedPokemon && (
-          <div className="detail-card">
-            <img
-              src={selectedPokemon.image}
-              alt={selectedPokemon.name}
-              width={120}
-              height={120}
-            />
-            <h2>{selectedPokemon.name}</h2>
-            <p>{selectedPokemon.description}</p>
-            <button onClick={() => setScreen(EPokedexScreen.POKEDEX)}>
-              Volver
-            </button>
-          </div>
-        )}
-        <IonToast
-          isOpen={!!error}
-          message={error}
-          duration={2000}
-          onDidDismiss={() => setError(undefined)}
-        />
+          )}
+        </div>
+
+        <Cross />
       </IonContent>
     </IonPage>
   );
