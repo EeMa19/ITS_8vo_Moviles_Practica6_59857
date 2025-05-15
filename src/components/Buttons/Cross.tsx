@@ -1,124 +1,78 @@
-// src/components/Buttons/Cross.tsx
-import React, { useContext, useEffect } from "react";
-import {
-  EPokedexScreen,
-  EPokedexMenuOption,
-  MenuPokedexContext,
-} from "../../contexts/MenuPokedexContext";
+import { useContext } from 'react';
+import { EPokedexScreen, MenuPokedexContext, EPokedexMenuOption } from '../../contexts/MenuPokedexContext';
 
-export const Cross: React.FC = () => {
+export const Cross = () => {
   const {
     screen,
     menuOption,
-    pokemonOption,
     setMenuOption,
-    setPokemonOption,
     setScreen,
-    setSelectedPokemon,
+    selectedPokemonIndex,
+    setSelectedPokemonIndex,
+    selectedItemIndex,
+    setSelectedItemIndex,
+    selectedEvolutionIndex,
+    setSelectedEvolutionIndex,
   } = useContext(MenuPokedexContext);
 
-  const cols = 6;      // columnas de tu grid de Pokémon
-  const total = 151;   // total de Pokémon listados
-
-  /** Navegar dentro del menú principal */
-  const navMenu = (dir: "up" | "down" | "left" | "right") => {
-    let next = menuOption;
-    if (dir === "up" || dir === "left") {
-      next =
-        menuOption - 1 < 1
-          ? EPokedexMenuOption.EXIT
-          : (menuOption - 1 as EPokedexMenuOption);
-    }
-    if (dir === "down" || dir === "right") {
-      next =
-        menuOption + 1 > 3
-          ? EPokedexMenuOption.POKEDEX
-          : (menuOption + 1 as EPokedexMenuOption);
-    }
-    setMenuOption(next);
-  };
-
-  /** Navegar dentro de la lista de Pokémon */
-  const navPokedex = (dir: "up" | "down" | "left" | "right") => {
-    let idx = pokemonOption;
-    if (dir === "up") idx = (idx - cols + total) % total;
-    if (dir === "down") idx = (idx + cols) % total;
-    if (dir === "left") idx = (idx - 1 + total) % total;
-    if (dir === "right") idx = (idx + 1) % total;
-    setPokemonOption(idx);
-  };
-
-  /** Maneja flecha, decidiendo según pantalla */
-  const onDirection = (dir: "up" | "down" | "left" | "right") => {
-    if (screen === EPokedexScreen.MENU) navMenu(dir);
-    else if (screen === EPokedexScreen.POKEDEX) navPokedex(dir);
-  };
-
-  /** Confirmar selección (ENTER o botón central) */
-  const confirm = () => {
+  const handleUp = () => {
     if (screen === EPokedexScreen.MENU) {
-      // Cambia de pantalla según opción del menú
-      setScreen(menuOption as unknown as EPokedexScreen);
+      const newOption = menuOption - 1 < 1 ? 3 : menuOption - 1;
+      setMenuOption(newOption);
     } else if (screen === EPokedexScreen.POKEDEX) {
-      // Mostrar detalle de Pokémon
-      setSelectedPokemon(null); // se establecerá dentro de la página detail
-      setScreen(EPokedexScreen.DETAIL);
+      setSelectedPokemonIndex(selectedPokemonIndex > 0 ? selectedPokemonIndex - 1 : 150); // Wrap to last Pokémon
+    } else if (screen === EPokedexScreen.PACK) {
+      setSelectedItemIndex(selectedItemIndex > 0 ? selectedItemIndex - 1 : 49); // Wrap to last item
     }
   };
 
-  /** Volver atrás (Backspace) */
-  const goBack = () => {
-    if (screen === EPokedexScreen.DETAIL) {
-      setScreen(EPokedexScreen.POKEDEX);
+  const handleDown = () => {
+    if (screen === EPokedexScreen.MENU) {
+      const newOption = menuOption + 1 > 3 ? 1 : menuOption + 1;
+      setMenuOption(newOption);
+    } else if (screen === EPokedexScreen.POKEDEX) {
+      setSelectedPokemonIndex(selectedPokemonIndex < 150 ? selectedPokemonIndex + 1 : 0); // Wrap to first Pokémon
+    } else if (screen === EPokedexScreen.PACK) {
+      setSelectedItemIndex(selectedItemIndex < 49 ? selectedItemIndex + 1 : 0); // Wrap to first item
     }
   };
 
-  /** Escucha teclado igual que antes */
-  useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      switch (e.key) {
-        case "ArrowUp":
-          return onDirection("up");
-        case "ArrowDown":
-          return onDirection("down");
-        case "ArrowLeft":
-          return onDirection("left");
-        case "ArrowRight":
-          return onDirection("right");
-        case "Enter":
-          return confirm();
-        case "Backspace":
-          return goBack();
-      }
-    };
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [screen, menuOption, pokemonOption]);
+  const handleLeft = () => {
+    if (screen === EPokedexScreen.POKEDEX) {
+      setSelectedEvolutionIndex(selectedEvolutionIndex > 0 ? selectedEvolutionIndex - 1 : 0); // Stay at first evolution
+    }
+  };
+
+  const handleRight = () => {
+    if (screen === EPokedexScreen.POKEDEX) {
+      // Max evolutions length is dynamic, but we don't have it here; assume max 2 for safety
+      setSelectedEvolutionIndex(selectedEvolutionIndex < 2 ? selectedEvolutionIndex + 1 : 2);
+    }
+  };
+
+  const handleSelect = () => {
+    if (screen === EPokedexScreen.MENU) {
+      setScreen(menuOption as unknown as EPokedexScreen);
+    }
+  };
 
   return (
     <div id="cross">
-      <div
-        id="leftcross"
-        className="gameboy-button"
-        onClick={() => onDirection("left")}
-      />
-      <div
-        id="topcross"
-        className="gameboy-button"
-        onClick={() => onDirection("up")}
-      />
-      <div
-        id="rightcross"
-        className="gameboy-button"
-        onClick={() => onDirection("right")}
-      />
-      <div
-        id="botcross"
-        className="gameboy-button"
-        onClick={() => onDirection("down")}
-      />
-      {/* Botón central para “Enter” */}
-      <div id="midcross" className="gameboy-button" onClick={confirm} />
+      <div id="leftcross" className="gameboy-button" onClick={handleLeft}>
+        <div id="leftT"></div>
+      </div>
+      <div id="topcross" className="gameboy-button" onClick={handleUp}>
+        <div id="upT"></div>
+      </div>
+      <div id="rightcross" className="gameboy-button" onClick={handleRight}>
+        <div id="rightT"></div>
+      </div>
+      <div id="midcross" className="gameboy-button" onClick={handleSelect}>
+        <div id="midCircle"></div>
+      </div>
+      <div id="botcross" className="gameboy-button" onClick={handleDown}>
+        <div id="downT"></div>
+      </div>
     </div>
   );
 };

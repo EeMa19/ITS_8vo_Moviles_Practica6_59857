@@ -1,38 +1,40 @@
 import { createContext } from "react";
-import { Pokemon } from "../interfaces/Pokemon";
 
 export enum EPokedexMenuOption {
   POKEDEX = 1,
-  PACK    = 2,
-  EXIT    = 3,
+  PACK = 2,
+  EXIT = 3
 }
 
 export enum EPokedexScreen {
-  MENU    = 0,
+  MENU,
   POKEDEX = 1,
-  PACK    = 2,
-  EXIT    = 3,
-  DETAIL  = 4,
+  PACK = 2,
+  EXIT = 3
 }
 
 export type TMenuPokedexContext = {
   screen: EPokedexScreen;
   menuOption: EPokedexMenuOption;
-  pokemonOption: number;
-  selectedPokemon: Pokemon | null;
+  selectedPokemonIndex: number;
+  selectedItemIndex: number;
+  selectedEvolutionIndex: number;
   setScreen: (option: EPokedexScreen) => void;
   setMenuOption: (option: EPokedexMenuOption) => void;
-  setPokemonOption: (index: number) => void;
-  setSelectedPokemon: (p: Pokemon | null) => void;
-};
+  setSelectedPokemonIndex: (index: number) => void;
+  setSelectedItemIndex: (index: number) => void;
+  setSelectedEvolutionIndex: (index: number) => void;
+}
 
 export const MenuPokedexContext = createContext<TMenuPokedexContext>({
   screen: EPokedexScreen.MENU,
   menuOption: EPokedexMenuOption.POKEDEX,
-  pokemonOption: 0,
-  selectedPokemon: null,
+  selectedPokemonIndex: 0,
+  selectedItemIndex: 0,
+  selectedEvolutionIndex: 0,
   setScreen: () => {},
   setMenuOption: () => {},
-  setPokemonOption: () => {},
-  setSelectedPokemon: () => {},
+  setSelectedPokemonIndex: () => {},
+  setSelectedItemIndex: () => {},
+  setSelectedEvolutionIndex: () => {},
 });

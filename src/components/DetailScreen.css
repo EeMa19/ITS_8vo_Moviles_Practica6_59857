@@ -1,0 +1,25 @@
+/* src/components/DetailScreen.css */
+
+.detail-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 16px;
+    font-family: 'Press Start 2P', sans-serif; /* ó la que uses para tu Pokedex */
+  }
+  
+  .pokemon-image {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    margin-bottom: 16px;
+  }
+  
+  .detail-screen p {
+    font-size: 0.875rem;
+    line-height: 1.4;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+  

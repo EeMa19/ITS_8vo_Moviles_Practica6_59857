@@ -1,32 +1,42 @@
-import React, { ReactNode, useState } from "react";
-import {
-  EPokedexMenuOption,
-  EPokedexScreen,
-  MenuPokedexContext,
-} from "./MenuPokedexContext";
-import { Pokemon } from "../interfaces/Pokemon";
+import { JSX, ReactNode, useState } from "react";
+import { EPokedexMenuOption, EPokedexScreen, MenuPokedexContext } from "./MenuPokedexContext";
 
-export const MenuPokedexProvider: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
-  const [screen, setScreen] = useState<EPokedexScreen>(EPokedexScreen.MENU);
-  const [menuOption, setMenuOption] = useState<EPokedexMenuOption>(
-    EPokedexMenuOption.POKEDEX
-  );
-  const [pokemonOption, setPokemonOption] = useState<number>(0);
-  const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null);
+export const MenuPokedexProvider = ({ children }: { children: ReactNode | JSX.Element | JSX.Element[] }) => {
+  const [screen, setScreen] = useState(EPokedexScreen.MENU);
+  const [menuOption, setMenuOption] = useState(EPokedexMenuOption.POKEDEX);
+  const [selectedPokemonIndex, setSelectedPokemonIndex] = useState(0);
+  const [selectedItemIndex, setSelectedItemIndex] = useState(0);
+  const [selectedEvolutionIndex, setSelectedEvolutionIndex] = useState(0);
+
+  const setScreenOption = (option: EPokedexScreen) => {
+    setScreen(option);
+  };
+
+  const getScreenOption = () => {
+    return screen;
+  };
+
+  const setMenuOptionValue = (option: EPokedexMenuOption) => {
+    setMenuOption(option);
+  };
+
+  const getMenuOption = () => {
+    return menuOption;
+  };
 
   return (
     <MenuPokedexContext.Provider
       value={{
-        screen,
-        menuOption,
-        pokemonOption,
-        selectedPokemon,
-        setScreen,
-        setMenuOption,
-        setPokemonOption,
-        setSelectedPokemon,
+        screen: getScreenOption(),
+        setScreen: setScreenOption,
+        menuOption: getMenuOption(),
+        setMenuOption: setMenuOptionValue,
+        selectedPokemonIndex,
+        setSelectedPokemonIndex,
+        selectedItemIndex,
+        setSelectedItemIndex,
+        selectedEvolutionIndex,
+        setSelectedEvolutionIndex,
       }}
     >
       {children}

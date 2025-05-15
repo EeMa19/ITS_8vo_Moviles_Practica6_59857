@@ -262,50 +262,23 @@ http://ionicframework.com/docs/theming/ */
 		border-bottom: 2px solid #330000;
 	}
 
-	#screen {
-		position: absolute;
-		top: 130px;       /* igual que tu diseño original */
-		left: 19px;
-		width: 296px;
+	div#screen
+	{
 		height: 245px;
+		width: 296px;
+		padding: 0 20px;
 		background-color: #b0b0b0;
+		float:left;
+
+		position: absolute;
+		top: 130px;
+		left: 19px;
+
 		border-radius: 15px;
-		overflow: hidden;     /* recorta todo lo que salga */
-		
-		display: flex;
-		flex-direction: column;
-		justify-content: flex-start; /* pegado arriba */
-		align-items: center;         /* centrado horizontal */
-		padding-top: 8px;            /* ajusta este valor si hace falta subir/bajar */
-		box-sizing: border-box;
-	  }
-	  
-	  /* Rejilla sin posicionamiento absoluto, fluye dentro de #screen */
-	  #screen .grid {
-		display: grid;
-		grid-template-columns: repeat(6, 1fr);
-		gap: 8px;
-	  }
-	  
-	  /* Tus casillas y seleccion siguen igual */
-	  .pokemon-slot {
-		width: 40px;
-		height: 40px;
-		border: 2px solid #444;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		border-radius: 4px;
-		cursor: pointer;
-	  }
-	  .pokemon-slot.selected {
-		border-color: #f00;
-	  }
-	  
-	  /* Detalle de Pokémon (puedes ajustarlo igual si lo necesitas) */
-	  .detail-card {
-		text-align: center;
-	  }
+		-webkit-border-radius: 15px;
+		-moz-border-radius: 15px;
+		-o-border-radius: 15px;
+	}
 
 	div#screen:after
 	{
